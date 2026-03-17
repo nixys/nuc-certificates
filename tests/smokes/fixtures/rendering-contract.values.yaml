@@ -1,0 +1,41 @@
+nameOverride: certificate-platform
+
+commonLabels:
+  platform: cert-manager
+  component: shared
+  tier: common
+
+commonAnnotations:
+  team: platform
+  note: common
+
+apiVersions:
+  clusterIssuer: cert-manager.io/v1beta1
+
+certificates:
+  - name: merged-certificate
+    apiVersion: example.io/v1alpha1
+    labels:
+      component: certificate
+      tier: edge
+    annotations:
+      note: edge-tls
+    spec:
+      secretName: merged-certificate-tls
+      issuerRef:
+        kind: ClusterIssuer
+        name: public-acme
+
+clusterIssuers:
+  - name: public-acme
+    namespace: should-not-render
+    labels:
+      component: issuer
+    annotations:
+      note: public
+    spec:
+      acme:
+        email: platform@example.com
+        server: https://acme.example.invalid/directory
+        privateKeySecretRef:
+          name: public-acme-account-key

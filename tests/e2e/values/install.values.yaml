@@ -1,0 +1,73 @@
+commonLabels:
+  test-suite: e2e
+
+commonAnnotations:
+  test-suite: e2e
+
+apiVersions:
+  certificate: cert-manager.io/v1
+  certificateRequest: cert-manager.io/v1
+  challenge: acme.cert-manager.io/v1
+  clusterIssuer: cert-manager.io/v1
+  issuer: cert-manager.io/v1
+  order: acme.cert-manager.io/v1
+
+clusterIssuers:
+  - name: e2e-clusterissuer
+    spec:
+      selfSigned: {}
+
+issuers:
+  - name: e2e-issuer
+    spec:
+      selfSigned: {}
+
+certificates:
+  - name: e2e-certificate
+    spec:
+      secretName: e2e-certificate-tls
+      dnsNames:
+        - e2e.example.com
+      issuerRef:
+        kind: ClusterIssuer
+        name: e2e-clusterissuer
+
+certificateRequests:
+  - name: e2e-certificaterequest
+    spec:
+      issuerRef:
+        group: cert-manager.io
+        kind: Issuer
+        name: e2e-issuer
+      request: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURSBSRVFVRVNULS0tLS0K
+      usages:
+        - digital signature
+
+orders:
+  - name: e2e-order
+    spec:
+      dnsNames:
+        - e2e.example.com
+      issuerRef:
+        group: cert-manager.io
+        kind: ClusterIssuer
+        name: e2e-clusterissuer
+      request: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURSBSRVFVRVNULS0tLS0K
+
+challenges:
+  - name: e2e-challenge
+    spec:
+      authorizationURL: https://acme.example.invalid/authz/123
+      dnsName: e2e.example.com
+      issuerRef:
+        group: cert-manager.io
+        kind: ClusterIssuer
+        name: e2e-clusterissuer
+      key: e2e-key
+      solver:
+        http01:
+          ingress:
+            ingressClassName: nginx
+      token: e2e-token
+      type: HTTP-01
+      url: https://acme.example.invalid/challenge/123

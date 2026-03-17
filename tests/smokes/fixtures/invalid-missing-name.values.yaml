@@ -1,0 +1,4 @@
+certificates:
+  - namespace: apps
+    spec:
+      secretName: invalid

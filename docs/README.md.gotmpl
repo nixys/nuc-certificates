@@ -79,23 +79,7 @@ The value contract is validated by [values.schema.json](values.schema.json).
 
 This section is generated from [values.yaml](values.yaml) by `helm-docs`. Edit [values.yaml](values.yaml) comments or [docs/README.md.gotmpl](docs/README.md.gotmpl), then run `pre-commit run helm-docs --all-files` or `make docs` if you need to refresh it outside a commit.
 
-| Key | Type | Default | Description |
-|-----|------|---------|-------------|
-| apiVersions.certificate | string | `"cert-manager.io/v1"` | Default apiVersion for Certificate resources. |
-| apiVersions.certificateRequest | string | `"cert-manager.io/v1"` | Default apiVersion for CertificateRequest resources. |
-| apiVersions.challenge | string | `"acme.cert-manager.io/v1"` | Default apiVersion for Challenge resources. |
-| apiVersions.clusterIssuer | string | `"cert-manager.io/v1"` | Default apiVersion for ClusterIssuer resources. |
-| apiVersions.issuer | string | `"cert-manager.io/v1"` | Default apiVersion for Issuer resources. |
-| apiVersions.order | string | `"acme.cert-manager.io/v1"` | Default apiVersion for Order resources. |
-| certificateRequests | list | `[]` | CertificateRequest resources to render. |
-| certificates | list | `[]` | Certificate resources to render. |
-| challenges | list | `[]` | Challenge resources to render. |
-| clusterIssuers | list | `[]` | ClusterIssuer resources to render. |
-| commonAnnotations | object | `{}` | Extra annotations applied to every rendered resource. |
-| commonLabels | object | `{}` | Extra labels applied to every rendered resource. |
-| issuers | list | `[]` | Issuer resources to render. |
-| nameOverride | string | `""` | Override the default chart label name if needed. |
-| orders | list | `[]` | Order resources to render. |
+{{ template "chart.valuesTable" . }}
 
 ## Included Values Files
 

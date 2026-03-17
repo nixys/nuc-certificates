@@ -1,0 +1,11 @@
+{{- range $index, $item := .Values.challenges }}
+---
+{{ include "nuc-certificates.renderResource" (dict
+  "root" $
+  "item" $item
+  "kind" "Challenge"
+  "defaultApiVersion" $.Values.apiVersions.challenge
+  "resourceKey" (printf "challenges[%d]" $index)
+  "namespaced" true
+) }}
+{{- end }}

@@ -1,0 +1,11 @@
+{{- range $index, $item := .Values.clusterIssuers }}
+---
+{{ include "nuc-certificates.renderResource" (dict
+  "root" $
+  "item" $item
+  "kind" "ClusterIssuer"
+  "defaultApiVersion" $.Values.apiVersions.clusterIssuer
+  "resourceKey" (printf "clusterIssuers[%d]" $index)
+  "namespaced" false
+) }}
+{{- end }}
