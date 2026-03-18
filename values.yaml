@@ -22,8 +22,8 @@ apiVersions:
   # -- Default apiVersion for Order resources.
   order: acme.cert-manager.io/v1
 
-# Each list item supports:
-# - name: required
+# Each resource map entry supports:
+# - the map key: required resource name
 # - namespace: optional for namespaced resources, defaults to the release namespace
 # - labels: optional
 # - annotations: optional
@@ -31,11 +31,9 @@ apiVersions:
 # - spec: arbitrary resource spec
 # - status: optional raw status block for fixtures and synthetic manifests
 
-# -- Certificate resources to render.
+# -- Certificate resources to render, keyed by resource name.
 certificates:
-  -
-    # -- Certificate resource name.
-    name: certificate-example
+  certificate-example:
     # -- Namespace for namespaced resources. Defaults to the release namespace when omitted.
     namespace: default
     # -- Extra labels merged with chart labels and `commonLabels`.
@@ -50,11 +48,9 @@ certificates:
     # -- Optional resource status rendered as-is.
     status: {}
 
-# -- CertificateRequest resources to render.
+# -- CertificateRequest resources to render, keyed by resource name.
 certificateRequests:
-  -
-    # -- CertificateRequest resource name.
-    name: certificate-request-example
+  certificate-request-example:
     # -- Namespace for namespaced resources. Defaults to the release namespace when omitted.
     namespace: default
     # -- Extra labels merged with chart labels and `commonLabels`.
@@ -69,11 +65,9 @@ certificateRequests:
     # -- Optional resource status rendered as-is.
     status: {}
 
-# -- Challenge resources to render.
+# -- Challenge resources to render, keyed by resource name.
 challenges:
-  -
-    # -- Challenge resource name.
-    name: challenge-example
+  challenge-example:
     # -- Namespace for namespaced resources. Defaults to the release namespace when omitted.
     namespace: default
     # -- Extra labels merged with chart labels and `commonLabels`.
@@ -88,11 +82,9 @@ challenges:
     # -- Optional resource status rendered as-is.
     status: {}
 
-# -- ClusterIssuer resources to render.
+# -- ClusterIssuer resources to render, keyed by resource name.
 clusterIssuers:
-  -
-    # -- ClusterIssuer resource name.
-    name: cluster-issuer-example
+  cluster-issuer-example:
     # -- Namespace for namespaced resources. Defaults to the release namespace when omitted.
     namespace: default
     # -- Extra labels merged with chart labels and `commonLabels`.
@@ -107,11 +99,9 @@ clusterIssuers:
     # -- Optional resource status rendered as-is.
     status: {}
 
-# -- Issuer resources to render.
+# -- Issuer resources to render, keyed by resource name.
 issuers:
-  -
-    # -- Issuer resource name.
-    name: issuer-example
+  issuer-example:
     # -- Namespace for namespaced resources. Defaults to the release namespace when omitted.
     namespace: default
     # -- Extra labels merged with chart labels and `commonLabels`.
@@ -126,11 +116,9 @@ issuers:
     # -- Optional resource status rendered as-is.
     status: {}
 
-# -- Order resources to render.
+# -- Order resources to render, keyed by resource name.
 orders:
-  -
-    # -- Order resource name.
-    name: order-example
+  order-example:
     # -- Namespace for namespaced resources. Defaults to the release namespace when omitted.
     namespace: default
     # -- Extra labels merged with chart labels and `commonLabels`.

@@ -13,17 +13,17 @@ apiVersions:
   order: acme.cert-manager.io/v1
 
 clusterIssuers:
-  - name: e2e-clusterissuer
+  e2e-clusterissuer:
     spec:
       selfSigned: {}
 
 issuers:
-  - name: e2e-issuer
+  e2e-issuer:
     spec:
       selfSigned: {}
 
 certificates:
-  - name: e2e-certificate
+  e2e-certificate:
     spec:
       secretName: e2e-certificate-tls
       dnsNames:
@@ -33,7 +33,7 @@ certificates:
         name: e2e-clusterissuer
 
 certificateRequests:
-  - name: e2e-certificaterequest
+  e2e-certificaterequest:
     spec:
       issuerRef:
         group: cert-manager.io
@@ -44,7 +44,7 @@ certificateRequests:
         - digital signature
 
 orders:
-  - name: e2e-order
+  e2e-order:
     spec:
       dnsNames:
         - e2e.example.com
@@ -55,7 +55,7 @@ orders:
       request: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURSBSRVFVRVNULS0tLS0K
 
 challenges:
-  - name: e2e-challenge
+  e2e-challenge:
     spec:
       authorizationURL: https://acme.example.invalid/authz/123
       dnsName: e2e.example.com

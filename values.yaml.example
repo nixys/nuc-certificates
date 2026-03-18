@@ -18,7 +18,7 @@ apiVersions:
   order: acme.cert-manager.io/v1
 
 clusterIssuers:
-  - name: letsencrypt-production
+  letsencrypt-production:
     labels:
       component: issuer
     annotations:
@@ -35,7 +35,7 @@ clusterIssuers:
                 ingressClassName: nginx
 
 issuers:
-  - name: team-selfsigned
+  team-selfsigned:
     namespace: apps
     labels:
       component: issuer
@@ -45,7 +45,7 @@ issuers:
       selfSigned: {}
 
 certificates:
-  - name: api-example-com
+  api-example-com:
     namespace: apps
     labels:
       component: certificate
@@ -70,7 +70,7 @@ certificates:
         - server auth
 
 certificateRequests:
-  - name: api-example-com-manual
+  api-example-com-manual:
     namespace: apps
     labels:
       component: certificate-request
@@ -90,7 +90,7 @@ certificateRequests:
       duration: 2160h
 
 orders:
-  - name: api-example-com-order
+  api-example-com-order:
     namespace: apps
     labels:
       component: order
@@ -106,7 +106,7 @@ orders:
       request: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURSBSRVFVRVNULS0tLS0K
 
 challenges:
-  - name: api-example-com-order-0
+  api-example-com-order-0:
     namespace: apps
     labels:
       component: challenge

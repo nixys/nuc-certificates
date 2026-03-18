@@ -1,11 +1,12 @@
-{{- range $index, $item := .Values.orders }}
+{{- range $name, $item := (.Values.orders | default dict) }}
 ---
 {{ include "nuc-certificates.renderResource" (dict
   "root" $
   "item" $item
+  "resourceName" $name
   "kind" "Order"
   "defaultApiVersion" $.Values.apiVersions.order
-  "resourceKey" (printf "orders[%d]" $index)
+  "resourceKey" (printf "orders.%s" $name)
   "namespaced" true
 ) }}
 {{- end }}

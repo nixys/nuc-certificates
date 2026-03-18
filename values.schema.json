@@ -43,28 +43,28 @@
       }
     },
     "certificates": {
-      "$ref": "#/definitions/resourceList",
-      "description": "List of Certificate resources."
+      "$ref": "#/definitions/resourceMap",
+      "description": "Certificate resources keyed by resource name."
     },
     "certificateRequests": {
-      "$ref": "#/definitions/resourceList",
-      "description": "List of CertificateRequest resources."
+      "$ref": "#/definitions/resourceMap",
+      "description": "CertificateRequest resources keyed by resource name."
     },
     "challenges": {
-      "$ref": "#/definitions/resourceList",
-      "description": "List of Challenge resources."
+      "$ref": "#/definitions/resourceMap",
+      "description": "Challenge resources keyed by resource name."
     },
     "clusterIssuers": {
-      "$ref": "#/definitions/resourceList",
-      "description": "List of ClusterIssuer resources."
+      "$ref": "#/definitions/resourceMap",
+      "description": "ClusterIssuer resources keyed by resource name."
     },
     "issuers": {
-      "$ref": "#/definitions/resourceList",
-      "description": "List of Issuer resources."
+      "$ref": "#/definitions/resourceMap",
+      "description": "Issuer resources keyed by resource name."
     },
     "orders": {
-      "$ref": "#/definitions/resourceList",
-      "description": "List of Order resources."
+      "$ref": "#/definitions/resourceMap",
+      "description": "Order resources keyed by resource name."
     }
   },
   "definitions": {
@@ -91,14 +91,7 @@
     "resourceItem": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "name"
-      ],
       "properties": {
-        "name": {
-          "$ref": "#/definitions/nonEmptyString",
-          "description": "Resource name."
-        },
         "namespace": {
           "$ref": "#/definitions/nonEmptyString",
           "description": "Namespace for namespaced resources. Ignored for cluster-scoped kinds."
@@ -125,10 +118,13 @@
         }
       }
     },
-    "resourceList": {
-      "type": "array",
-      "default": [],
-      "items": {
+    "resourceMap": {
+      "type": "object",
+      "default": {},
+      "propertyNames": {
+        "$ref": "#/definitions/nonEmptyString"
+      },
+      "additionalProperties": {
         "$ref": "#/definitions/resourceItem"
       }
     }

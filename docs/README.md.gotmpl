@@ -45,7 +45,7 @@ Support for individual kinds and fields still depends on the cert-manager CRDs i
 
 ## Values Model
 
-Each top-level list in [values.yaml](values.yaml) maps to one resource kind:
+Each top-level map in [values.yaml](values.yaml) groups one resource kind:
 
 - `certificates`
 - `certificateRequests`
@@ -54,11 +54,10 @@ Each top-level list in [values.yaml](values.yaml) maps to one resource kind:
 - `issuers`
 - `orders`
 
-Every list item uses the same generic contract:
+The resource name is the map key. Every map value uses the same generic contract:
 
 | Field | Required | Description |
 |-------|----------|-------------|
-| `name` | yes | Resource name. |
 | `namespace` | no | Namespace for namespaced resources. Defaults to the Helm release namespace. Ignored for cluster-scoped resources. |
 | `labels` | no | Labels merged on top of built-in chart labels and `commonLabels`. |
 | `annotations` | no | Annotations merged on top of `commonAnnotations`. |
@@ -75,6 +74,8 @@ Global controls:
 
 The value contract is validated by [values.schema.json](values.schema.json).
 
+Only the chart-owned resource collections use maps. Raw CRD payloads under `spec` and `status` still follow the upstream cert-manager schemas, including any nested arrays they require.
+
 ## Helm Values
 
 This section is generated from [values.yaml](values.yaml) by `helm-docs`. Edit [values.yaml](values.yaml) comments or [docs/README.md.gotmpl](docs/README.md.gotmpl), then run `pre-commit run helm-docs --all-files` or `make docs` if you need to refresh it outside a commit.
@@ -88,11 +89,19 @@ This section is generated from [values.yaml](values.yaml) by `helm-docs`. Edit [
 
 Use [values.yaml.example](values.yaml.example) as a starting point and remove the sections you do not need.
 
+## Upgrading
+
+### To 1.0.0
+
+- Replace top-level resource lists such as `certificates`, `issuers`, and `orders` with maps keyed by resource name.
+- Remove the nested `name` field from each chart-managed resource entry. The map key now becomes `metadata.name`.
+- Keep raw cert-manager payloads under `spec` and `status` unchanged. Arrays such as `dnsNames`, `solvers`, and `usages` remain arrays because they are part of the CRD schema.
+
 ## Testing
 
 The repository uses three test layers:
 
-- `tests/units/` for `helm-unittest` suites and backward compatibility checks
+- `tests/units/` for `helm-unittest` suites and same-major backward compatibility checks
 - `tests/e2e/` for local kind-based Helm install checks against real cert-manager CRDs
 - `tests/smokes/` for render and schema smoke scenarios
 
@@ -130,7 +139,7 @@ The `e2e` layer is intentionally kept out of GitLab CI and is expected to be run
 | [values.yaml.example](values.yaml.example) | Full example configuration. |
 | [values.schema.json](values.schema.json) | JSON schema for chart values. |
 | [templates/](templates) | One template per supported cert-manager kind plus shared helpers. |
-| [tests/units/](tests/units) | Compact Helm unit suites and backward compatibility checks. |
+| [tests/units/](tests/units) | Compact Helm unit suites and same-major backward compatibility checks. |
 | [tests/e2e/](tests/e2e) | kind-based end-to-end installation checks. |
 | [tests/smokes/](tests/smokes) | Smoke scenarios for render and schema validation. |
 | [docs/DEPENDENCY.md](docs/DEPENDENCY.md) | Local dependency installation guide for development and tests. |

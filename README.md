@@ -45,7 +45,7 @@ Support for individual kinds and fields still depends on the cert-manager CRDs i
 
 ## Values Model
 
-Each top-level list in [values.yaml](values.yaml) maps to one resource kind:
+Each top-level map in [values.yaml](values.yaml) groups one resource kind:
 
 - `certificates`
 - `certificateRequests`
@@ -54,11 +54,10 @@ Each top-level list in [values.yaml](values.yaml) maps to one resource kind:
 - `issuers`
 - `orders`
 
-Every list item uses the same generic contract:
+The resource name is the map key. Every map value uses the same generic contract:
 
 | Field | Required | Description |
 |-------|----------|-------------|
-| `name` | yes | Resource name. |
 | `namespace` | no | Namespace for namespaced resources. Defaults to the Helm release namespace. Ignored for cluster-scoped resources. |
 | `labels` | no | Labels merged on top of built-in chart labels and `commonLabels`. |
 | `annotations` | no | Annotations merged on top of `commonAnnotations`. |
@@ -75,6 +74,8 @@ Global controls:
 
 The value contract is validated by [values.schema.json](values.schema.json).
 
+Only the chart-owned resource collections use maps. Raw CRD payloads under `spec` and `status` still follow the upstream cert-manager schemas, including any nested arrays they require.
+
 ## Helm Values
 
 This section is generated from [values.yaml](values.yaml) by `helm-docs`. Edit [values.yaml](values.yaml) comments or [docs/README.md.gotmpl](docs/README.md.gotmpl), then run `pre-commit run helm-docs --all-files` or `make docs` if you need to refresh it outside a commit.
@@ -87,57 +88,51 @@ This section is generated from [values.yaml](values.yaml) by `helm-docs`. Edit [
 | apiVersions.clusterIssuer | string | `"cert-manager.io/v1"` | Default apiVersion for ClusterIssuer resources. |
 | apiVersions.issuer | string | `"cert-manager.io/v1"` | Default apiVersion for Issuer resources. |
 | apiVersions.order | string | `"acme.cert-manager.io/v1"` | Default apiVersion for Order resources. |
-| certificateRequests | list | `[{"annotations":{"helm-docs.nuc.internal/ignore":"true"},"apiVersion":"cert-manager.io/v1","labels":{},"name":"certificate-request-example","namespace":"default","spec":{},"status":{}}]` | CertificateRequest resources to render. |
-| certificateRequests[0].annotations | object | `{"helm-docs.nuc.internal/ignore":"true"}` | Extra annotations merged with `commonAnnotations`. |
-| certificateRequests[0].apiVersion | string | `"cert-manager.io/v1"` | Per-resource apiVersion override. |
-| certificateRequests[0].labels | object | `{}` | Extra labels merged with chart labels and `commonLabels`. |
-| certificateRequests[0].name | string | `"certificate-request-example"` | CertificateRequest resource name. |
-| certificateRequests[0].namespace | string | `"default"` | Namespace for namespaced resources. Defaults to the release namespace when omitted. |
-| certificateRequests[0].spec | object | `{}` | CertificateRequest spec rendered as-is. |
-| certificateRequests[0].status | object | `{}` | Optional resource status rendered as-is. |
-| certificates | list | `[{"annotations":{"helm-docs.nuc.internal/ignore":"true"},"apiVersion":"cert-manager.io/v1","labels":{},"name":"certificate-example","namespace":"default","spec":{},"status":{}}]` | Certificate resources to render. |
-| certificates[0].annotations | object | `{"helm-docs.nuc.internal/ignore":"true"}` | Extra annotations merged with `commonAnnotations`. |
-| certificates[0].apiVersion | string | `"cert-manager.io/v1"` | Per-resource apiVersion override. |
-| certificates[0].labels | object | `{}` | Extra labels merged with chart labels and `commonLabels`. |
-| certificates[0].name | string | `"certificate-example"` | Certificate resource name. |
-| certificates[0].namespace | string | `"default"` | Namespace for namespaced resources. Defaults to the release namespace when omitted. |
-| certificates[0].spec | object | `{}` | Certificate spec rendered as-is. |
-| certificates[0].status | object | `{}` | Optional resource status rendered as-is. |
-| challenges | list | `[{"annotations":{"helm-docs.nuc.internal/ignore":"true"},"apiVersion":"acme.cert-manager.io/v1","labels":{},"name":"challenge-example","namespace":"default","spec":{},"status":{}}]` | Challenge resources to render. |
-| challenges[0].annotations | object | `{"helm-docs.nuc.internal/ignore":"true"}` | Extra annotations merged with `commonAnnotations`. |
-| challenges[0].apiVersion | string | `"acme.cert-manager.io/v1"` | Per-resource apiVersion override. |
-| challenges[0].labels | object | `{}` | Extra labels merged with chart labels and `commonLabels`. |
-| challenges[0].name | string | `"challenge-example"` | Challenge resource name. |
-| challenges[0].namespace | string | `"default"` | Namespace for namespaced resources. Defaults to the release namespace when omitted. |
-| challenges[0].spec | object | `{}` | Challenge spec rendered as-is. |
-| challenges[0].status | object | `{}` | Optional resource status rendered as-is. |
-| clusterIssuers | list | `[{"annotations":{"helm-docs.nuc.internal/ignore":"true"},"apiVersion":"cert-manager.io/v1","labels":{},"name":"cluster-issuer-example","namespace":"default","spec":{},"status":{}}]` | ClusterIssuer resources to render. |
-| clusterIssuers[0].annotations | object | `{"helm-docs.nuc.internal/ignore":"true"}` | Extra annotations merged with `commonAnnotations`. |
-| clusterIssuers[0].apiVersion | string | `"cert-manager.io/v1"` | Per-resource apiVersion override. |
-| clusterIssuers[0].labels | object | `{}` | Extra labels merged with chart labels and `commonLabels`. |
-| clusterIssuers[0].name | string | `"cluster-issuer-example"` | ClusterIssuer resource name. |
-| clusterIssuers[0].namespace | string | `"default"` | Namespace for namespaced resources. Defaults to the release namespace when omitted. |
-| clusterIssuers[0].spec | object | `{}` | ClusterIssuer spec rendered as-is. |
-| clusterIssuers[0].status | object | `{}` | Optional resource status rendered as-is. |
+| certificateRequests | object | `{"certificate-request-example":{"annotations":{"helm-docs.nuc.internal/ignore":"true"},"apiVersion":"cert-manager.io/v1","labels":{},"namespace":"default","spec":{},"status":{}}}` | CertificateRequest resources to render, keyed by resource name. |
+| certificateRequests.certificate-request-example.annotations | object | `{"helm-docs.nuc.internal/ignore":"true"}` | Extra annotations merged with `commonAnnotations`. |
+| certificateRequests.certificate-request-example.apiVersion | string | `"cert-manager.io/v1"` | Per-resource apiVersion override. |
+| certificateRequests.certificate-request-example.labels | object | `{}` | Extra labels merged with chart labels and `commonLabels`. |
+| certificateRequests.certificate-request-example.namespace | string | `"default"` | Namespace for namespaced resources. Defaults to the release namespace when omitted. |
+| certificateRequests.certificate-request-example.spec | object | `{}` | CertificateRequest spec rendered as-is. |
+| certificateRequests.certificate-request-example.status | object | `{}` | Optional resource status rendered as-is. |
+| certificates | object | `{"certificate-example":{"annotations":{"helm-docs.nuc.internal/ignore":"true"},"apiVersion":"cert-manager.io/v1","labels":{},"namespace":"default","spec":{},"status":{}}}` | Certificate resources to render, keyed by resource name. |
+| certificates.certificate-example.annotations | object | `{"helm-docs.nuc.internal/ignore":"true"}` | Extra annotations merged with `commonAnnotations`. |
+| certificates.certificate-example.apiVersion | string | `"cert-manager.io/v1"` | Per-resource apiVersion override. |
+| certificates.certificate-example.labels | object | `{}` | Extra labels merged with chart labels and `commonLabels`. |
+| certificates.certificate-example.namespace | string | `"default"` | Namespace for namespaced resources. Defaults to the release namespace when omitted. |
+| certificates.certificate-example.spec | object | `{}` | Certificate spec rendered as-is. |
+| certificates.certificate-example.status | object | `{}` | Optional resource status rendered as-is. |
+| challenges | object | `{"challenge-example":{"annotations":{"helm-docs.nuc.internal/ignore":"true"},"apiVersion":"acme.cert-manager.io/v1","labels":{},"namespace":"default","spec":{},"status":{}}}` | Challenge resources to render, keyed by resource name. |
+| challenges.challenge-example.annotations | object | `{"helm-docs.nuc.internal/ignore":"true"}` | Extra annotations merged with `commonAnnotations`. |
+| challenges.challenge-example.apiVersion | string | `"acme.cert-manager.io/v1"` | Per-resource apiVersion override. |
+| challenges.challenge-example.labels | object | `{}` | Extra labels merged with chart labels and `commonLabels`. |
+| challenges.challenge-example.namespace | string | `"default"` | Namespace for namespaced resources. Defaults to the release namespace when omitted. |
+| challenges.challenge-example.spec | object | `{}` | Challenge spec rendered as-is. |
+| challenges.challenge-example.status | object | `{}` | Optional resource status rendered as-is. |
+| clusterIssuers | object | `{"cluster-issuer-example":{"annotations":{"helm-docs.nuc.internal/ignore":"true"},"apiVersion":"cert-manager.io/v1","labels":{},"namespace":"default","spec":{},"status":{}}}` | ClusterIssuer resources to render, keyed by resource name. |
+| clusterIssuers.cluster-issuer-example.annotations | object | `{"helm-docs.nuc.internal/ignore":"true"}` | Extra annotations merged with `commonAnnotations`. |
+| clusterIssuers.cluster-issuer-example.apiVersion | string | `"cert-manager.io/v1"` | Per-resource apiVersion override. |
+| clusterIssuers.cluster-issuer-example.labels | object | `{}` | Extra labels merged with chart labels and `commonLabels`. |
+| clusterIssuers.cluster-issuer-example.namespace | string | `"default"` | Namespace for namespaced resources. Defaults to the release namespace when omitted. |
+| clusterIssuers.cluster-issuer-example.spec | object | `{}` | ClusterIssuer spec rendered as-is. |
+| clusterIssuers.cluster-issuer-example.status | object | `{}` | Optional resource status rendered as-is. |
 | commonAnnotations | object | `{}` | Extra annotations applied to every rendered resource. |
 | commonLabels | object | `{}` | Extra labels applied to every rendered resource. |
-| issuers | list | `[{"annotations":{"helm-docs.nuc.internal/ignore":"true"},"apiVersion":"cert-manager.io/v1","labels":{},"name":"issuer-example","namespace":"default","spec":{},"status":{}}]` | Issuer resources to render. |
-| issuers[0].annotations | object | `{"helm-docs.nuc.internal/ignore":"true"}` | Extra annotations merged with `commonAnnotations`. |
-| issuers[0].apiVersion | string | `"cert-manager.io/v1"` | Per-resource apiVersion override. |
-| issuers[0].labels | object | `{}` | Extra labels merged with chart labels and `commonLabels`. |
-| issuers[0].name | string | `"issuer-example"` | Issuer resource name. |
-| issuers[0].namespace | string | `"default"` | Namespace for namespaced resources. Defaults to the release namespace when omitted. |
-| issuers[0].spec | object | `{}` | Issuer spec rendered as-is. |
-| issuers[0].status | object | `{}` | Optional resource status rendered as-is. |
+| issuers | object | `{"issuer-example":{"annotations":{"helm-docs.nuc.internal/ignore":"true"},"apiVersion":"cert-manager.io/v1","labels":{},"namespace":"default","spec":{},"status":{}}}` | Issuer resources to render, keyed by resource name. |
+| issuers.issuer-example.annotations | object | `{"helm-docs.nuc.internal/ignore":"true"}` | Extra annotations merged with `commonAnnotations`. |
+| issuers.issuer-example.apiVersion | string | `"cert-manager.io/v1"` | Per-resource apiVersion override. |
+| issuers.issuer-example.labels | object | `{}` | Extra labels merged with chart labels and `commonLabels`. |
+| issuers.issuer-example.namespace | string | `"default"` | Namespace for namespaced resources. Defaults to the release namespace when omitted. |
+| issuers.issuer-example.spec | object | `{}` | Issuer spec rendered as-is. |
+| issuers.issuer-example.status | object | `{}` | Optional resource status rendered as-is. |
 | nameOverride | string | `""` | Override the default chart label name if needed. |
-| orders | list | `[{"annotations":{"helm-docs.nuc.internal/ignore":"true"},"apiVersion":"acme.cert-manager.io/v1","labels":{},"name":"order-example","namespace":"default","spec":{},"status":{}}]` | Order resources to render. |
-| orders[0].annotations | object | `{"helm-docs.nuc.internal/ignore":"true"}` | Extra annotations merged with `commonAnnotations`. |
-| orders[0].apiVersion | string | `"acme.cert-manager.io/v1"` | Per-resource apiVersion override. |
-| orders[0].labels | object | `{}` | Extra labels merged with chart labels and `commonLabels`. |
-| orders[0].name | string | `"order-example"` | Order resource name. |
-| orders[0].namespace | string | `"default"` | Namespace for namespaced resources. Defaults to the release namespace when omitted. |
-| orders[0].spec | object | `{}` | Order spec rendered as-is. |
-| orders[0].status | object | `{}` | Optional resource status rendered as-is. |
+| orders | object | `{"order-example":{"annotations":{"helm-docs.nuc.internal/ignore":"true"},"apiVersion":"acme.cert-manager.io/v1","labels":{},"namespace":"default","spec":{},"status":{}}}` | Order resources to render, keyed by resource name. |
+| orders.order-example.annotations | object | `{"helm-docs.nuc.internal/ignore":"true"}` | Extra annotations merged with `commonAnnotations`. |
+| orders.order-example.apiVersion | string | `"acme.cert-manager.io/v1"` | Per-resource apiVersion override. |
+| orders.order-example.labels | object | `{}` | Extra labels merged with chart labels and `commonLabels`. |
+| orders.order-example.namespace | string | `"default"` | Namespace for namespaced resources. Defaults to the release namespace when omitted. |
+| orders.order-example.spec | object | `{}` | Order spec rendered as-is. |
+| orders.order-example.status | object | `{}` | Optional resource status rendered as-is. |
 
 ## Included Values Files
 
@@ -146,11 +141,19 @@ This section is generated from [values.yaml](values.yaml) by `helm-docs`. Edit [
 
 Use [values.yaml.example](values.yaml.example) as a starting point and remove the sections you do not need.
 
+## Upgrading
+
+### To 1.0.0
+
+- Replace top-level resource lists such as `certificates`, `issuers`, and `orders` with maps keyed by resource name.
+- Remove the nested `name` field from each chart-managed resource entry. The map key now becomes `metadata.name`.
+- Keep raw cert-manager payloads under `spec` and `status` unchanged. Arrays such as `dnsNames`, `solvers`, and `usages` remain arrays because they are part of the CRD schema.
+
 ## Testing
 
 The repository uses three test layers:
 
-- `tests/units/` for `helm-unittest` suites and backward compatibility checks
+- `tests/units/` for `helm-unittest` suites and same-major backward compatibility checks
 - `tests/e2e/` for local kind-based Helm install checks against real cert-manager CRDs
 - `tests/smokes/` for render and schema smoke scenarios
 
@@ -188,7 +191,7 @@ The `e2e` layer is intentionally kept out of GitLab CI and is expected to be run
 | [values.yaml.example](values.yaml.example) | Full example configuration. |
 | [values.schema.json](values.schema.json) | JSON schema for chart values. |
 | [templates/](templates) | One template per supported cert-manager kind plus shared helpers. |
-| [tests/units/](tests/units) | Compact Helm unit suites and backward compatibility checks. |
+| [tests/units/](tests/units) | Compact Helm unit suites and same-major backward compatibility checks. |
 | [tests/e2e/](tests/e2e) | kind-based end-to-end installation checks. |
 | [tests/smokes/](tests/smokes) | Smoke scenarios for render and schema validation. |
 | [docs/DEPENDENCY.md](docs/DEPENDENCY.md) | Local dependency installation guide for development and tests. |

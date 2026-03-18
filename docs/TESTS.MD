@@ -2,7 +2,7 @@
 
 This chart uses three complementary automated test layers:
 
-- `tests/units/` for fast `helm-unittest` suites and backward-compatibility checks
+- `tests/units/` for fast `helm-unittest` suites and same-major backward-compatibility checks
 - `tests/e2e/` for kind-based chart installation against real cert-manager CRDs
 - `tests/smokes/` for smoke scenarios that exercise full render flows
 
@@ -47,7 +47,8 @@ The unit layer currently covers:
    Renders the current chart with `values.yaml` from previous stable git tags and verifies that:
    - old values files still pass `helm lint`
    - old values files still render with `helm template`
-   - missing previous major, minor, or patch tags are treated as skip conditions rather than hard failures
+   - checks are limited to previous minor and patch tags in the current major series
+   - missing previous minor or patch tags are treated as skip conditions rather than hard failures
 
 ## Running Unit Tests
 
@@ -67,6 +68,7 @@ Notes:
 
 - value file paths inside the unit suites are resolved relative to `tests/units/`
 - the backward-compatibility script requires git tags to be available locally
+- previous major-series values are not expected to remain compatible after a breaking chart release
 
 ## E2E Tests
 
@@ -163,7 +165,7 @@ tests/smokes/
 ├── helpers/
 │   └── argparser.py
 ├── fixtures/
-│   ├── invalid-missing-name.values.yaml
+│   ├── invalid-resource-list.values.yaml
 │   └── rendering-contract.values.yaml
 ├── run/
 │   └── smoke.py
@@ -185,8 +187,8 @@ The smoke suite currently covers:
 1. `default-empty`
    Verifies that the chart renders no manifests with default values.
 
-2. `schema-invalid-missing-name`
-   Verifies that `values.schema.json` is active and rejects a resource item without `name`.
+2. `schema-invalid-resource-list`
+   Verifies that `values.schema.json` is active and rejects the legacy list-based resource contract.
 
 3. `rendering-contract`
    Verifies chart-owned behavior rather than CRD payload content:

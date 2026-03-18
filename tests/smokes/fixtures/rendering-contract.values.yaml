@@ -13,7 +13,7 @@ apiVersions:
   clusterIssuer: cert-manager.io/v1beta1
 
 certificates:
-  - name: merged-certificate
+  merged-certificate:
     apiVersion: example.io/v1alpha1
     labels:
       component: certificate
@@ -27,7 +27,7 @@ certificates:
         name: public-acme
 
 clusterIssuers:
-  - name: public-acme
+  public-acme:
     namespace: should-not-render
     labels:
       component: issuer

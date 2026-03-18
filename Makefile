@@ -30,7 +30,7 @@ test-unit: ## Run helm-unittest suites from tests/units
 	helm unittest -f '$(UNIT_GLOB)' .
 
 .PHONY: test-compat
-test-compat: ## Run backward compatibility checks against previous tags
+test-compat: ## Run backward compatibility checks against previous same-major tags
 	sh tests/units/backward_compatibility_test.sh
 
 .PHONY: test-smoke
@@ -41,7 +41,7 @@ test-smoke: ## Run all smoke scenarios; append SMOKE_ARGS='--scenario example-re
 test-smoke-fast: ## Run smoke scenarios except kubeconform-dependent validation
 	python3 tests/smokes/run/smoke.py \
 		--scenario default-empty \
-		--scenario schema-invalid-missing-name \
+		--scenario schema-invalid-resource-list \
 		--scenario rendering-contract \
 		--scenario example-render \
 		$(SMOKE_ARGS)

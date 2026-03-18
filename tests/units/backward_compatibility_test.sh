@@ -11,14 +11,6 @@ if [ -z "$CURRENT_MAJOR" ] || [ -z "$CURRENT_MINOR" ] || [ -z "$CURRENT_PATCH" ]
   exit 1
 fi
 
-latest_stable_tag_for_major() {
-  major="$1"
-  git tag --list "v${major}.*" \
-    | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' \
-    | sort -V \
-    | tail -n 1
-}
-
 latest_stable_tag_for_major_minor() {
   major="$1"
   minor="$2"
@@ -56,17 +48,6 @@ run_compat_check() {
   helm lint . -f "$values_file"
   helm template "compat-${tag}" . -f "$values_file" > /dev/null
 }
-
-PREV_MAJOR_TAG=""
-if [ "$CURRENT_MAJOR" -eq 0 ]; then
-  echo "Skipping previous major compatibility check for ${CHART_VERSION}: no previous major version exists"
-else
-  PREVIOUS_MAJOR=$((CURRENT_MAJOR - 1))
-  PREV_MAJOR_TAG="$(latest_stable_tag_for_major "$PREVIOUS_MAJOR")"
-  if [ -z "$PREV_MAJOR_TAG" ]; then
-    echo "Skipping previous major compatibility check: no stable tag found for previous major ${PREVIOUS_MAJOR}.x"
-  fi
-fi
 
 PREV_MINOR_TAG=""
 if [ "$CURRENT_MINOR" -eq 0 ]; then
@@ -110,7 +91,6 @@ run_compat_check_if_available() {
   CHECK_COUNT=$((CHECK_COUNT + 1))
 }
 
-run_compat_check_if_available "$PREV_MAJOR_TAG"
 run_compat_check_if_available "$PREV_MINOR_TAG"
 run_compat_check_if_available "$PREV_PATCH_TAG"
 

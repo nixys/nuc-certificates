@@ -16,6 +16,7 @@ helm.sh/chart: {{ include "nuc-certificates.chart" . }}
 {{- define "nuc-certificates.renderResource" -}}
 {{- $root := .root -}}
 {{- $item := .item -}}
+{{- $resourceName := .resourceName -}}
 {{- $resourceKey := .resourceKey -}}
 {{- $shouldIgnore := eq (get ($item.annotations | default dict) "helm-docs.nuc.internal/ignore") "true" -}}
 {{- if not $shouldIgnore -}}
@@ -25,7 +26,7 @@ helm.sh/chart: {{ include "nuc-certificates.chart" . }}
 apiVersion: {{ default .defaultApiVersion $item.apiVersion }}
 kind: {{ .kind }}
 metadata:
-  name: {{ required (printf "%s.name is required" $resourceKey) $item.name }}
+  name: {{ required (printf "%s key is required" $resourceKey) $resourceName }}
   {{- if .namespaced }}
   namespace: {{ default $root.Release.Namespace $item.namespace }}
   {{- end }}

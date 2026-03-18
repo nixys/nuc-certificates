@@ -29,8 +29,8 @@ class SmokeContext:
         return self.repo_root / "tests" / "smokes" / "fixtures" / "rendering-contract.values.yaml"
 
     @property
-    def invalid_missing_name_values(self) -> Path:
-        return self.repo_root / "tests" / "smokes" / "fixtures" / "invalid-missing-name.values.yaml"
+    def invalid_resource_list_values(self) -> Path:
+        return self.repo_root / "tests" / "smokes" / "fixtures" / "invalid-resource-list.values.yaml"
 
 
 def check_default_empty(context: SmokeContext) -> None:
@@ -47,22 +47,23 @@ def check_default_empty(context: SmokeContext) -> None:
     render.assert_doc_count(documents, 0)
 
 
-def check_schema_invalid_missing_name(context: SmokeContext) -> None:
+def check_schema_invalid_resource_list(context: SmokeContext) -> None:
     result = helm.lint(
         context.chart_dir,
-        values_file=context.invalid_missing_name_values,
+        values_file=context.invalid_resource_list_values,
         workdir=context.workdir,
         check=False,
     )
     if result.returncode == 0:
         raise system.TestFailure(
-            "helm lint unexpectedly succeeded for invalid values without resource name"
+            "helm lint unexpectedly succeeded for legacy list-based resource values"
         )
 
     combined_output = f"{result.stdout}\n{result.stderr}"
-    if "name" not in combined_output:
+    combined_output_lower = combined_output.lower()
+    if "object" not in combined_output_lower or "array" not in combined_output_lower:
         raise system.TestFailure(
-            "helm lint failed for invalid values, but the error does not mention the missing name field"
+            "helm lint failed for invalid values, but the error does not mention the list-to-map contract mismatch"
         )
 
 
@@ -199,7 +200,7 @@ def check_example_kubeconform(context: SmokeContext) -> None:
 
 SCENARIOS: list[tuple[str, Callable[[SmokeContext], None]]] = [
     ("default-empty", check_default_empty),
-    ("schema-invalid-missing-name", check_schema_invalid_missing_name),
+    ("schema-invalid-resource-list", check_schema_invalid_resource_list),
     ("rendering-contract", check_rendering_contract),
     ("example-render", check_example_render),
     ("example-kubeconform", check_example_kubeconform),
