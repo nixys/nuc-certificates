@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable
 
+from tests.smokes.helpers.argparser import SCENARIO_ALIASES
 from tests.smokes.steps import chart, helm, kubeconform, render, system
 
 
@@ -207,13 +208,25 @@ SCENARIOS: list[tuple[str, Callable[[SmokeContext], None]]] = [
 ]
 
 
+def normalize_scenarios(requested: list[str]) -> list[str]:
+    normalized: list[str] = []
+    seen: set[str] = set()
+    for name in requested:
+        canonical_name = SCENARIO_ALIASES.get(name, name)
+        if canonical_name in seen:
+            continue
+        normalized.append(canonical_name)
+        seen.add(canonical_name)
+    return normalized
+
+
 def run_smoke_suite(args) -> int:
     scenario_map = dict(SCENARIOS)
     requested = args.scenario or ["all"]
     if "all" in requested:
         selected = [name for name, _ in SCENARIOS]
     else:
-        selected = requested
+        selected = normalize_scenarios(requested)
 
     repo_root = Path(args.chart_dir).resolve()
     workdir, chart_dir = chart.stage_chart(repo_root, args.workdir)

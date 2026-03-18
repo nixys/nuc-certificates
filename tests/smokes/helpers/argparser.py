@@ -8,10 +8,15 @@ DEFAULT_SCHEMA_LOCATION = (
     "{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json"
 )
 
+SCENARIO_ALIASES = {
+    "schema-invalid-missing-name": "schema-invalid-resource-list",
+}
+
 SCENARIO_CHOICES = [
     "all",
     "default-empty",
     "schema-invalid-resource-list",
+    "schema-invalid-missing-name",
     "rendering-contract",
     "example-render",
     "example-kubeconform",
