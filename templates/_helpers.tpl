@@ -17,6 +17,8 @@ helm.sh/chart: {{ include "nuc-certificates.chart" . }}
 {{- $root := .root -}}
 {{- $item := .item -}}
 {{- $resourceKey := .resourceKey -}}
+{{- $shouldIgnore := eq (get ($item.annotations | default dict) "helm-docs.nuc.internal/ignore") "true" -}}
+{{- if not $shouldIgnore -}}
 {{- $defaultLabels := include "nuc-certificates.labels" $root | fromYaml -}}
 {{- $labels := mustMergeOverwrite (dict) $defaultLabels ($root.Values.commonLabels | default dict) ($item.labels | default dict) -}}
 {{- $annotations := mustMergeOverwrite (dict) ($root.Values.commonAnnotations | default dict) ($item.annotations | default dict) -}}
@@ -40,5 +42,6 @@ spec:
 {{- with $item.status }}
 status:
 {{ toYaml . | nindent 2 }}
+{{- end }}
 {{- end }}
 {{- end -}}

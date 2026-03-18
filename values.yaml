@@ -32,19 +32,115 @@ apiVersions:
 # - status: optional raw status block for fixtures and synthetic manifests
 
 # -- Certificate resources to render.
-certificates: []
+certificates:
+  -
+    # -- Certificate resource name.
+    name: certificate-example
+    # -- Namespace for namespaced resources. Defaults to the release namespace when omitted.
+    namespace: default
+    # -- Extra labels merged with chart labels and `commonLabels`.
+    labels: {}
+    # -- Extra annotations merged with `commonAnnotations`.
+    annotations:
+      helm-docs.nuc.internal/ignore: "true"
+    # -- Per-resource apiVersion override.
+    apiVersion: cert-manager.io/v1
+    # -- Certificate spec rendered as-is.
+    spec: {}
+    # -- Optional resource status rendered as-is.
+    status: {}
 
 # -- CertificateRequest resources to render.
-certificateRequests: []
+certificateRequests:
+  -
+    # -- CertificateRequest resource name.
+    name: certificate-request-example
+    # -- Namespace for namespaced resources. Defaults to the release namespace when omitted.
+    namespace: default
+    # -- Extra labels merged with chart labels and `commonLabels`.
+    labels: {}
+    # -- Extra annotations merged with `commonAnnotations`.
+    annotations:
+      helm-docs.nuc.internal/ignore: "true"
+    # -- Per-resource apiVersion override.
+    apiVersion: cert-manager.io/v1
+    # -- CertificateRequest spec rendered as-is.
+    spec: {}
+    # -- Optional resource status rendered as-is.
+    status: {}
 
 # -- Challenge resources to render.
-challenges: []
+challenges:
+  -
+    # -- Challenge resource name.
+    name: challenge-example
+    # -- Namespace for namespaced resources. Defaults to the release namespace when omitted.
+    namespace: default
+    # -- Extra labels merged with chart labels and `commonLabels`.
+    labels: {}
+    # -- Extra annotations merged with `commonAnnotations`.
+    annotations:
+      helm-docs.nuc.internal/ignore: "true"
+    # -- Per-resource apiVersion override.
+    apiVersion: acme.cert-manager.io/v1
+    # -- Challenge spec rendered as-is.
+    spec: {}
+    # -- Optional resource status rendered as-is.
+    status: {}
 
 # -- ClusterIssuer resources to render.
-clusterIssuers: []
+clusterIssuers:
+  -
+    # -- ClusterIssuer resource name.
+    name: cluster-issuer-example
+    # -- Namespace for namespaced resources. Defaults to the release namespace when omitted.
+    namespace: default
+    # -- Extra labels merged with chart labels and `commonLabels`.
+    labels: {}
+    # -- Extra annotations merged with `commonAnnotations`.
+    annotations:
+      helm-docs.nuc.internal/ignore: "true"
+    # -- Per-resource apiVersion override.
+    apiVersion: cert-manager.io/v1
+    # -- ClusterIssuer spec rendered as-is.
+    spec: {}
+    # -- Optional resource status rendered as-is.
+    status: {}
 
 # -- Issuer resources to render.
-issuers: []
+issuers:
+  -
+    # -- Issuer resource name.
+    name: issuer-example
+    # -- Namespace for namespaced resources. Defaults to the release namespace when omitted.
+    namespace: default
+    # -- Extra labels merged with chart labels and `commonLabels`.
+    labels: {}
+    # -- Extra annotations merged with `commonAnnotations`.
+    annotations:
+      helm-docs.nuc.internal/ignore: "true"
+    # -- Per-resource apiVersion override.
+    apiVersion: cert-manager.io/v1
+    # -- Issuer spec rendered as-is.
+    spec: {}
+    # -- Optional resource status rendered as-is.
+    status: {}
 
 # -- Order resources to render.
-orders: []
+orders:
+  -
+    # -- Order resource name.
+    name: order-example
+    # -- Namespace for namespaced resources. Defaults to the release namespace when omitted.
+    namespace: default
+    # -- Extra labels merged with chart labels and `commonLabels`.
+    labels: {}
+    # -- Extra annotations merged with `commonAnnotations`.
+    annotations:
+      helm-docs.nuc.internal/ignore: "true"
+    # -- Per-resource apiVersion override.
+    apiVersion: acme.cert-manager.io/v1
+    # -- Order spec rendered as-is.
+    spec: {}
+    # -- Optional resource status rendered as-is.
+    status: {}
