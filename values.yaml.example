@@ -1,0 +1,130 @@
+# Example values for all supported cert-manager resources in this chart.
+# Render with:
+#   helm template nuc-certificates . -f values.yaml.example
+
+nameOverride: ""
+
+commonLabels:
+  platform: cert-manager
+commonAnnotations:
+  team: platform
+
+apiVersions:
+  certificate: cert-manager.io/v1
+  certificateRequest: cert-manager.io/v1
+  challenge: acme.cert-manager.io/v1
+  clusterIssuer: cert-manager.io/v1
+  issuer: cert-manager.io/v1
+  order: acme.cert-manager.io/v1
+
+clusterIssuers:
+  letsencrypt-production:
+    labels:
+      component: issuer
+    annotations:
+      note: acme-production
+    spec:
+      acme:
+        email: platform@example.com
+        server: https://acme-v02.api.letsencrypt.org/directory
+        privateKeySecretRef:
+          name: letsencrypt-production-account-key
+        solvers:
+          - http01:
+              ingress:
+                ingressClassName: nginx
+
+issuers:
+  team-selfsigned:
+    namespace: apps
+    labels:
+      component: issuer
+    annotations:
+      note: selfsigned
+    spec:
+      selfSigned: {}
+
+certificates:
+  api-example-com:
+    namespace: apps
+    labels:
+      component: certificate
+    annotations:
+      note: edge-tls
+    spec:
+      secretName: api-example-com-tls
+      commonName: api.example.com
+      dnsNames:
+        - api.example.com
+        - www.api.example.com
+      issuerRef:
+        kind: ClusterIssuer
+        name: letsencrypt-production
+      privateKey:
+        algorithm: RSA
+        size: 2048
+        rotationPolicy: Always
+      usages:
+        - digital signature
+        - key encipherment
+        - server auth
+
+certificateRequests:
+  api-example-com-manual:
+    namespace: apps
+    labels:
+      component: certificate-request
+    annotations:
+      note: manual-approval
+    spec:
+      issuerRef:
+        group: cert-manager.io
+        kind: ClusterIssuer
+        name: letsencrypt-production
+      request: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURSBSRVFVRVNULS0tLS0K
+      usages:
+        - digital signature
+        - key encipherment
+        - server auth
+      isCA: false
+      duration: 2160h
+
+orders:
+  api-example-com-order:
+    namespace: apps
+    labels:
+      component: order
+    annotations:
+      note: acme-order
+    spec:
+      dnsNames:
+        - api.example.com
+      issuerRef:
+        group: cert-manager.io
+        kind: ClusterIssuer
+        name: letsencrypt-production
+      request: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURSBSRVFVRVNULS0tLS0K
+
+challenges:
+  api-example-com-order-0:
+    namespace: apps
+    labels:
+      component: challenge
+    annotations:
+      note: dns01
+    spec:
+      authorizationURL: https://acme-v02.api.letsencrypt.org/acme/authz-v3/123456789
+      dnsName: api.example.com
+      issuerRef:
+        group: cert-manager.io
+        kind: ClusterIssuer
+        name: letsencrypt-production
+      key: example-key
+      solver:
+        dns01:
+          cloudDNS:
+            hostedZoneName: example-com
+            project: platform-prod
+      token: example-token
+      type: DNS-01
+      url: https://acme-v02.api.letsencrypt.org/acme/chall-v3/123456789/example

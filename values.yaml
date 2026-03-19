@@ -1,0 +1,134 @@
+# -- Override the default chart label name if needed.
+nameOverride: ""
+
+# -- Extra labels applied to every rendered resource.
+commonLabels: {}
+# -- Extra annotations applied to every rendered resource.
+commonAnnotations: {}
+
+# The defaults below are aligned with the cert-manager CRDs published upstream.
+# Override them if your cluster uses another bundle version.
+apiVersions:
+  # -- Default apiVersion for Certificate resources.
+  certificate: cert-manager.io/v1
+  # -- Default apiVersion for CertificateRequest resources.
+  certificateRequest: cert-manager.io/v1
+  # -- Default apiVersion for Challenge resources.
+  challenge: acme.cert-manager.io/v1
+  # -- Default apiVersion for ClusterIssuer resources.
+  clusterIssuer: cert-manager.io/v1
+  # -- Default apiVersion for Issuer resources.
+  issuer: cert-manager.io/v1
+  # -- Default apiVersion for Order resources.
+  order: acme.cert-manager.io/v1
+
+# Each resource map entry supports:
+# - the map key: required resource name
+# - namespace: optional for namespaced resources, defaults to the release namespace
+# - labels: optional
+# - annotations: optional
+# - apiVersion: optional override for a single resource
+# - spec: arbitrary resource spec
+# - status: optional raw status block for fixtures and synthetic manifests
+
+# -- Certificate resources to render, keyed by resource name.
+certificates:
+  certificate-example:
+    # -- Namespace for namespaced resources. Defaults to the release namespace when omitted.
+    namespace: default
+    # -- Extra labels merged with chart labels and `commonLabels`.
+    labels: {}
+    # -- Extra annotations merged with `commonAnnotations`.
+    annotations:
+      helm-docs.nuc.internal/ignore: "true"
+    # -- Per-resource apiVersion override.
+    apiVersion: cert-manager.io/v1
+    # -- Certificate spec rendered as-is.
+    spec: {}
+    # -- Optional resource status rendered as-is.
+    status: {}
+
+# -- CertificateRequest resources to render, keyed by resource name.
+certificateRequests:
+  certificate-request-example:
+    # -- Namespace for namespaced resources. Defaults to the release namespace when omitted.
+    namespace: default
+    # -- Extra labels merged with chart labels and `commonLabels`.
+    labels: {}
+    # -- Extra annotations merged with `commonAnnotations`.
+    annotations:
+      helm-docs.nuc.internal/ignore: "true"
+    # -- Per-resource apiVersion override.
+    apiVersion: cert-manager.io/v1
+    # -- CertificateRequest spec rendered as-is.
+    spec: {}
+    # -- Optional resource status rendered as-is.
+    status: {}
+
+# -- Challenge resources to render, keyed by resource name.
+challenges:
+  challenge-example:
+    # -- Namespace for namespaced resources. Defaults to the release namespace when omitted.
+    namespace: default
+    # -- Extra labels merged with chart labels and `commonLabels`.
+    labels: {}
+    # -- Extra annotations merged with `commonAnnotations`.
+    annotations:
+      helm-docs.nuc.internal/ignore: "true"
+    # -- Per-resource apiVersion override.
+    apiVersion: acme.cert-manager.io/v1
+    # -- Challenge spec rendered as-is.
+    spec: {}
+    # -- Optional resource status rendered as-is.
+    status: {}
+
+# -- ClusterIssuer resources to render, keyed by resource name.
+clusterIssuers:
+  cluster-issuer-example:
+    # -- Namespace for namespaced resources. Defaults to the release namespace when omitted.
+    namespace: default
+    # -- Extra labels merged with chart labels and `commonLabels`.
+    labels: {}
+    # -- Extra annotations merged with `commonAnnotations`.
+    annotations:
+      helm-docs.nuc.internal/ignore: "true"
+    # -- Per-resource apiVersion override.
+    apiVersion: cert-manager.io/v1
+    # -- ClusterIssuer spec rendered as-is.
+    spec: {}
+    # -- Optional resource status rendered as-is.
+    status: {}
+
+# -- Issuer resources to render, keyed by resource name.
+issuers:
+  issuer-example:
+    # -- Namespace for namespaced resources. Defaults to the release namespace when omitted.
+    namespace: default
+    # -- Extra labels merged with chart labels and `commonLabels`.
+    labels: {}
+    # -- Extra annotations merged with `commonAnnotations`.
+    annotations:
+      helm-docs.nuc.internal/ignore: "true"
+    # -- Per-resource apiVersion override.
+    apiVersion: cert-manager.io/v1
+    # -- Issuer spec rendered as-is.
+    spec: {}
+    # -- Optional resource status rendered as-is.
+    status: {}
+
+# -- Order resources to render, keyed by resource name.
+orders:
+  order-example:
+    # -- Namespace for namespaced resources. Defaults to the release namespace when omitted.
+    namespace: default
+    # -- Extra labels merged with chart labels and `commonLabels`.
+    labels: {}
+    # -- Extra annotations merged with `commonAnnotations`.
+    annotations:
+      helm-docs.nuc.internal/ignore: "true"
+    # -- Per-resource apiVersion override.
+    apiVersion: acme.cert-manager.io/v1
+    # -- Order spec rendered as-is.
+    spec: {}
+    # -- Optional resource status rendered as-is.
+    status: {}

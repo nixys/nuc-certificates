@@ -1,93 +1,198 @@
 # NUC Certificates
 
+Helm chart for rendering cert-manager custom resources from declarative values.
 
+The chart does not install cert-manager CRDs or the cert-manager controllers. It only renders cert-manager resources that are already supported by the target cluster.
 
-## Getting started
+The supported resource set is based on the upstream cert-manager CRDs under [deploy/crds](https://github.com/cert-manager/cert-manager/tree/master/deploy/crds), but this chart renders the custom resources created from those CRDs rather than the CRDs themselves.
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+## Quick Start
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+Render the example configuration:
 
-## Add your files
-
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
-
-```
-cd existing_repo
-git remote add origin https://git.nixys.ru/apps/nuc-subcharts/nuc-certificates.git
-git branch -M main
-git push -uf origin main
+```bash
+helm template nuc-certificates . -f values.yaml.example
 ```
 
-## Integrate with your tools
+Install the chart:
 
-- [ ] [Set up project integrations](https://git.nixys.ru/apps/nuc-subcharts/nuc-certificates/-/settings/integrations)
+```bash
+helm install nuc-certificates . \
+  --namespace cert-manager-resources \
+  --create-namespace \
+  -f values.yaml.example
+```
 
-## Collaborate with your team
+Install the local README generator hook:
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/user/project/merge_requests/auto_merge/)
+```bash
+pre-commit install
+pre-commit install-hooks
+```
 
-## Test and Deploy
+## Supported Resources
 
-Use the built-in continuous integration in GitLab.
+The chart can render these cert-manager kinds:
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+- `Certificate`
+- `CertificateRequest`
+- `Challenge`
+- `ClusterIssuer`
+- `Issuer`
+- `Order`
 
-***
+Support for individual kinds and fields still depends on the cert-manager CRDs installed in the cluster.
 
-# Editing this README
+## Values Model
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+Each top-level map in [values.yaml](values.yaml) groups one resource kind:
 
-## Suggestions for a good README
+- `certificates`
+- `certificateRequests`
+- `challenges`
+- `clusterIssuers`
+- `issuers`
+- `orders`
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+The resource name is the map key. Every map value uses the same generic contract:
 
-## Name
-Choose a self-explaining name for your project.
+| Field | Required | Description |
+|-------|----------|-------------|
+| `namespace` | no | Namespace for namespaced resources. Defaults to the Helm release namespace. Ignored for cluster-scoped resources. |
+| `labels` | no | Labels merged on top of built-in chart labels and `commonLabels`. |
+| `annotations` | no | Annotations merged on top of `commonAnnotations`. |
+| `apiVersion` | no | Per-resource API version override. |
+| `spec` | no | Raw resource spec rendered as-is. |
+| `status` | no | Optional raw status block. Usually not managed through Helm in production. |
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+Global controls:
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+- `nameOverride`
+- `commonLabels`
+- `commonAnnotations`
+- `apiVersions.*`
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+The value contract is validated by [values.schema.json](values.schema.json).
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+Only the chart-owned resource collections use maps. Raw CRD payloads under `spec` and `status` still follow the upstream cert-manager schemas, including any nested arrays they require.
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+## Helm Values
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+This section is generated from [values.yaml](values.yaml) by `helm-docs`. Edit [values.yaml](values.yaml) comments or [docs/README.md.gotmpl](docs/README.md.gotmpl), then run `pre-commit run helm-docs --all-files` or `make docs` if you need to refresh it outside a commit.
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| apiVersions.certificate | string | `"cert-manager.io/v1"` | Default apiVersion for Certificate resources. |
+| apiVersions.certificateRequest | string | `"cert-manager.io/v1"` | Default apiVersion for CertificateRequest resources. |
+| apiVersions.challenge | string | `"acme.cert-manager.io/v1"` | Default apiVersion for Challenge resources. |
+| apiVersions.clusterIssuer | string | `"cert-manager.io/v1"` | Default apiVersion for ClusterIssuer resources. |
+| apiVersions.issuer | string | `"cert-manager.io/v1"` | Default apiVersion for Issuer resources. |
+| apiVersions.order | string | `"acme.cert-manager.io/v1"` | Default apiVersion for Order resources. |
+| certificateRequests | object | `{"certificate-request-example":{"annotations":{"helm-docs.nuc.internal/ignore":"true"},"apiVersion":"cert-manager.io/v1","labels":{},"namespace":"default","spec":{},"status":{}}}` | CertificateRequest resources to render, keyed by resource name. |
+| certificateRequests.certificate-request-example.annotations | object | `{"helm-docs.nuc.internal/ignore":"true"}` | Extra annotations merged with `commonAnnotations`. |
+| certificateRequests.certificate-request-example.apiVersion | string | `"cert-manager.io/v1"` | Per-resource apiVersion override. |
+| certificateRequests.certificate-request-example.labels | object | `{}` | Extra labels merged with chart labels and `commonLabels`. |
+| certificateRequests.certificate-request-example.namespace | string | `"default"` | Namespace for namespaced resources. Defaults to the release namespace when omitted. |
+| certificateRequests.certificate-request-example.spec | object | `{}` | CertificateRequest spec rendered as-is. |
+| certificateRequests.certificate-request-example.status | object | `{}` | Optional resource status rendered as-is. |
+| certificates | object | `{"certificate-example":{"annotations":{"helm-docs.nuc.internal/ignore":"true"},"apiVersion":"cert-manager.io/v1","labels":{},"namespace":"default","spec":{},"status":{}}}` | Certificate resources to render, keyed by resource name. |
+| certificates.certificate-example.annotations | object | `{"helm-docs.nuc.internal/ignore":"true"}` | Extra annotations merged with `commonAnnotations`. |
+| certificates.certificate-example.apiVersion | string | `"cert-manager.io/v1"` | Per-resource apiVersion override. |
+| certificates.certificate-example.labels | object | `{}` | Extra labels merged with chart labels and `commonLabels`. |
+| certificates.certificate-example.namespace | string | `"default"` | Namespace for namespaced resources. Defaults to the release namespace when omitted. |
+| certificates.certificate-example.spec | object | `{}` | Certificate spec rendered as-is. |
+| certificates.certificate-example.status | object | `{}` | Optional resource status rendered as-is. |
+| challenges | object | `{"challenge-example":{"annotations":{"helm-docs.nuc.internal/ignore":"true"},"apiVersion":"acme.cert-manager.io/v1","labels":{},"namespace":"default","spec":{},"status":{}}}` | Challenge resources to render, keyed by resource name. |
+| challenges.challenge-example.annotations | object | `{"helm-docs.nuc.internal/ignore":"true"}` | Extra annotations merged with `commonAnnotations`. |
+| challenges.challenge-example.apiVersion | string | `"acme.cert-manager.io/v1"` | Per-resource apiVersion override. |
+| challenges.challenge-example.labels | object | `{}` | Extra labels merged with chart labels and `commonLabels`. |
+| challenges.challenge-example.namespace | string | `"default"` | Namespace for namespaced resources. Defaults to the release namespace when omitted. |
+| challenges.challenge-example.spec | object | `{}` | Challenge spec rendered as-is. |
+| challenges.challenge-example.status | object | `{}` | Optional resource status rendered as-is. |
+| clusterIssuers | object | `{"cluster-issuer-example":{"annotations":{"helm-docs.nuc.internal/ignore":"true"},"apiVersion":"cert-manager.io/v1","labels":{},"namespace":"default","spec":{},"status":{}}}` | ClusterIssuer resources to render, keyed by resource name. |
+| clusterIssuers.cluster-issuer-example.annotations | object | `{"helm-docs.nuc.internal/ignore":"true"}` | Extra annotations merged with `commonAnnotations`. |
+| clusterIssuers.cluster-issuer-example.apiVersion | string | `"cert-manager.io/v1"` | Per-resource apiVersion override. |
+| clusterIssuers.cluster-issuer-example.labels | object | `{}` | Extra labels merged with chart labels and `commonLabels`. |
+| clusterIssuers.cluster-issuer-example.namespace | string | `"default"` | Namespace for namespaced resources. Defaults to the release namespace when omitted. |
+| clusterIssuers.cluster-issuer-example.spec | object | `{}` | ClusterIssuer spec rendered as-is. |
+| clusterIssuers.cluster-issuer-example.status | object | `{}` | Optional resource status rendered as-is. |
+| commonAnnotations | object | `{}` | Extra annotations applied to every rendered resource. |
+| commonLabels | object | `{}` | Extra labels applied to every rendered resource. |
+| issuers | object | `{"issuer-example":{"annotations":{"helm-docs.nuc.internal/ignore":"true"},"apiVersion":"cert-manager.io/v1","labels":{},"namespace":"default","spec":{},"status":{}}}` | Issuer resources to render, keyed by resource name. |
+| issuers.issuer-example.annotations | object | `{"helm-docs.nuc.internal/ignore":"true"}` | Extra annotations merged with `commonAnnotations`. |
+| issuers.issuer-example.apiVersion | string | `"cert-manager.io/v1"` | Per-resource apiVersion override. |
+| issuers.issuer-example.labels | object | `{}` | Extra labels merged with chart labels and `commonLabels`. |
+| issuers.issuer-example.namespace | string | `"default"` | Namespace for namespaced resources. Defaults to the release namespace when omitted. |
+| issuers.issuer-example.spec | object | `{}` | Issuer spec rendered as-is. |
+| issuers.issuer-example.status | object | `{}` | Optional resource status rendered as-is. |
+| nameOverride | string | `""` | Override the default chart label name if needed. |
+| orders | object | `{"order-example":{"annotations":{"helm-docs.nuc.internal/ignore":"true"},"apiVersion":"acme.cert-manager.io/v1","labels":{},"namespace":"default","spec":{},"status":{}}}` | Order resources to render, keyed by resource name. |
+| orders.order-example.annotations | object | `{"helm-docs.nuc.internal/ignore":"true"}` | Extra annotations merged with `commonAnnotations`. |
+| orders.order-example.apiVersion | string | `"acme.cert-manager.io/v1"` | Per-resource apiVersion override. |
+| orders.order-example.labels | object | `{}` | Extra labels merged with chart labels and `commonLabels`. |
+| orders.order-example.namespace | string | `"default"` | Namespace for namespaced resources. Defaults to the release namespace when omitted. |
+| orders.order-example.spec | object | `{}` | Order spec rendered as-is. |
+| orders.order-example.status | object | `{}` | Optional resource status rendered as-is. |
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+## Included Values Files
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+- [values.yaml](values.yaml): minimal defaults that render no resources.
+- [values.yaml.example](values.yaml.example): complete example covering every supported resource type.
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+Use [values.yaml.example](values.yaml.example) as a starting point and remove the sections you do not need.
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+## Upgrading
 
-## License
-For open source projects, say how it is licensed.
+### To 1.0.0
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+- Replace top-level resource lists such as `certificates`, `issuers`, and `orders` with maps keyed by resource name.
+- Remove the nested `name` field from each chart-managed resource entry. The map key now becomes `metadata.name`.
+- Keep raw cert-manager payloads under `spec` and `status` unchanged. Arrays such as `dnsNames`, `solvers`, and `usages` remain arrays because they are part of the CRD schema.
+
+## Testing
+
+The repository uses three test layers:
+
+- `tests/units/` for `helm-unittest` suites and same-major backward compatibility checks
+- `tests/e2e/` for local kind-based Helm install checks against real cert-manager CRDs
+- `tests/smokes/` for render and schema smoke scenarios
+
+Representative local commands:
+
+```bash
+helm lint . -f values.yaml.example
+helm template nuc-certificates . -f values.yaml.example
+helm unittest -f 'tests/units/*_test.yaml' .
+sh tests/units/backward_compatibility_test.sh
+python3 tests/smokes/run/smoke.py --scenario example-render
+make test-e2e
+```
+
+Detailed test documentation is available in [docs/TESTS.MD](docs/TESTS.MD).
+
+Local setup instructions for the development and test toolchain are available in [docs/DEPENDENCY.md](docs/DEPENDENCY.md).
+
+The `e2e` layer is intentionally kept out of GitLab CI and is expected to be run locally through [Makefile](Makefile) or directly via `tests/e2e/test-e2e.sh`.
+
+## Notes
+
+- Keep the chart API versions aligned with the cert-manager CRDs installed in the cluster.
+- `ClusterIssuer` is cluster-scoped; all other supported resources in this chart are namespaced.
+- Prefer managing `spec` through Helm and let cert-manager own `status`.
+
+## Repository Layout
+
+| Path | Purpose |
+|------|---------|
+| [Chart.yaml](Chart.yaml) | Chart metadata. |
+| [values.yaml](values.yaml) | Minimal default values and `helm-docs` source comments. |
+| [docs/README.md.gotmpl](docs/README.md.gotmpl) | Template used by `helm-docs` to build `README.md`. |
+| [.pre-commit-config.yaml](.pre-commit-config.yaml) | Local hooks, including automatic `helm-docs` generation on commit. |
+| [values.yaml.example](values.yaml.example) | Full example configuration. |
+| [values.schema.json](values.schema.json) | JSON schema for chart values. |
+| [templates/](templates) | One template per supported cert-manager kind plus shared helpers. |
+| [tests/units/](tests/units) | Compact Helm unit suites and same-major backward compatibility checks. |
+| [tests/e2e/](tests/e2e) | kind-based end-to-end installation checks. |
+| [tests/smokes/](tests/smokes) | Smoke scenarios for render and schema validation. |
+| [docs/DEPENDENCY.md](docs/DEPENDENCY.md) | Local dependency installation guide for development and tests. |
+| [docs/TESTS.MD](docs/TESTS.MD) | Detailed testing documentation. |

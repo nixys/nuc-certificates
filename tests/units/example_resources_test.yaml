@@ -1,0 +1,178 @@
+suite: example resources
+templates:
+  - templates/certificate.yaml
+  - templates/certificaterequest.yaml
+  - templates/challenge.yaml
+  - templates/clusterissuer.yaml
+  - templates/issuer.yaml
+  - templates/order.yaml
+release:
+  name: unit-test
+  namespace: unit-namespace
+
+tests:
+  - it: renders the expected document count per template
+    values:
+      - ../../values.yaml.example
+    asserts:
+      - hasDocuments:
+          count: 1
+        template: templates/certificate.yaml
+      - hasDocuments:
+          count: 1
+        template: templates/certificaterequest.yaml
+      - hasDocuments:
+          count: 1
+        template: templates/challenge.yaml
+      - hasDocuments:
+          count: 1
+        template: templates/clusterissuer.yaml
+      - hasDocuments:
+          count: 1
+        template: templates/issuer.yaml
+      - hasDocuments:
+          count: 1
+        template: templates/order.yaml
+
+  - it: renders the expected example manifests
+    values:
+      - ../../values.yaml.example
+    asserts:
+      - containsDocument:
+          kind: Certificate
+          apiVersion: cert-manager.io/v1
+          name: api-example-com
+          namespace: apps
+          any: true
+        template: templates/certificate.yaml
+      - containsDocument:
+          kind: CertificateRequest
+          apiVersion: cert-manager.io/v1
+          name: api-example-com-manual
+          namespace: apps
+          any: true
+        template: templates/certificaterequest.yaml
+      - containsDocument:
+          kind: Challenge
+          apiVersion: acme.cert-manager.io/v1
+          name: api-example-com-order-0
+          namespace: apps
+          any: true
+        template: templates/challenge.yaml
+      - containsDocument:
+          kind: ClusterIssuer
+          apiVersion: cert-manager.io/v1
+          name: letsencrypt-production
+          any: true
+        template: templates/clusterissuer.yaml
+      - containsDocument:
+          kind: Issuer
+          apiVersion: cert-manager.io/v1
+          name: team-selfsigned
+          namespace: apps
+          any: true
+        template: templates/issuer.yaml
+      - containsDocument:
+          kind: Order
+          apiVersion: acme.cert-manager.io/v1
+          name: api-example-com-order
+          namespace: apps
+          any: true
+        template: templates/order.yaml
+
+  - it: renders the ClusterIssuer example
+    values:
+      - ../../values.yaml.example
+    template: templates/clusterissuer.yaml
+    documentSelector:
+      path: metadata.name
+      value: letsencrypt-production
+    asserts:
+      - isKind:
+          of: ClusterIssuer
+      - notExists:
+          path: metadata.namespace
+      - equal:
+          path: spec.acme.privateKeySecretRef.name
+          value: letsencrypt-production-account-key
+
+  - it: renders the Issuer example
+    values:
+      - ../../values.yaml.example
+    template: templates/issuer.yaml
+    documentSelector:
+      path: metadata.name
+      value: team-selfsigned
+    asserts:
+      - isKind:
+          of: Issuer
+      - equal:
+          path: metadata.namespace
+          value: apps
+      - exists:
+          path: spec.selfSigned
+
+  - it: renders the Certificate example
+    values:
+      - ../../values.yaml.example
+    template: templates/certificate.yaml
+    documentSelector:
+      path: metadata.name
+      value: api-example-com
+    asserts:
+      - isKind:
+          of: Certificate
+      - equal:
+          path: spec.secretName
+          value: api-example-com-tls
+      - equal:
+          path: spec.issuerRef.name
+          value: letsencrypt-production
+
+  - it: renders the CertificateRequest example
+    values:
+      - ../../values.yaml.example
+    template: templates/certificaterequest.yaml
+    documentSelector:
+      path: metadata.name
+      value: api-example-com-manual
+    asserts:
+      - isKind:
+          of: CertificateRequest
+      - equal:
+          path: spec.issuerRef.kind
+          value: ClusterIssuer
+      - equal:
+          path: spec.duration
+          value: 2160h
+
+  - it: renders the Order example
+    values:
+      - ../../values.yaml.example
+    template: templates/order.yaml
+    documentSelector:
+      path: metadata.name
+      value: api-example-com-order
+    asserts:
+      - isKind:
+          of: Order
+      - equal:
+          path: spec.dnsNames[0]
+          value: api.example.com
+
+  - it: renders the Challenge example
+    values:
+      - ../../values.yaml.example
+    template: templates/challenge.yaml
+    documentSelector:
+      path: metadata.name
+      value: api-example-com-order-0
+    asserts:
+      - isKind:
+          of: Challenge
+      - equal:
+          path: spec.type
+          value: DNS-01
+      - equal:
+          path: spec.solver.dns01.cloudDNS.project
+          value: platform-prod

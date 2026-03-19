@@ -1,0 +1,7 @@
+---
+apiVersion: v2
+name: nuc-certificates
+description: Helm chart for rendering cert-manager custom resources
+type: application
+version: 1.0.0-rc1
+appVersion: "v1"
