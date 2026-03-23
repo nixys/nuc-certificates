@@ -1,4 +1,4 @@
-# -- Enable nuc-argocd chart rendering.
+# -- Enable nuc-certificates chart rendering.
 enabled: true
 
 # -- Override the default chart label name if needed.
