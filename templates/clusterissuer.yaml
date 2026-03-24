@@ -1,12 +1,1 @@
-{{- range $name, $item := (.Values.clusterIssuers | default dict) }}
----
-{{ include "nuc-certificates.renderResource" (dict
-  "root" $
-  "item" $item
-  "resourceName" $name
-  "kind" "ClusterIssuer"
-  "defaultApiVersion" $.Values.apiVersions.clusterIssuer
-  "resourceKey" (printf "clusterIssuers.%s" $name)
-  "namespaced" false
-) }}
-{{- end }}
+{{ include "nuc-certificates.renderResourceCollection" (dict "root" $ "items" .Values.clusterIssuers "resourceKey" "clusterIssuers" "defaultApiVersion" $.Values.apiVersions.clusterIssuer "kind" "ClusterIssuer" "namespaced" false) }}

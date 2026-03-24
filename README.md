@@ -65,12 +65,16 @@ The resource name is the map key. Every map value uses the same generic contract
 | `spec` | no | Raw resource spec rendered as-is. |
 | `status` | no | Optional raw status block. Usually not managed through Helm in production. |
 
+In a higher-precedence values file, set a map entry to `null` to suppress a default resource from a lower-precedence values file.
+
 Global controls:
 
+- `enabled`
 - `nameOverride`
 - `commonLabels`
 - `commonAnnotations`
 - `apiVersions.*`
+- `global` (accepted for umbrella-chart compatibility and ignored by templates)
 
 The value contract is validated by [values.schema.json](values.schema.json).
 
@@ -118,6 +122,8 @@ This section is generated from [values.yaml](values.yaml) by `helm-docs`. Edit [
 | clusterIssuers.cluster-issuer-example.status | object | `{}` | Optional resource status rendered as-is. |
 | commonAnnotations | object | `{}` | Extra annotations applied to every rendered resource. |
 | commonLabels | object | `{}` | Extra labels applied to every rendered resource. |
+| enabled | bool | `true` | Enable nuc-certificates chart rendering. |
+| global | object | `{}` | Compatibility values inherited from umbrella charts. Accepted but ignored by this chart. |
 | issuers | object | `{"issuer-example":{"annotations":{"helm-docs.nuc.internal/ignore":"true"},"apiVersion":"cert-manager.io/v1","labels":{},"namespace":"default","spec":{},"status":{}}}` | Issuer resources to render, keyed by resource name. |
 | issuers.issuer-example.annotations | object | `{"helm-docs.nuc.internal/ignore":"true"}` | Extra annotations merged with `commonAnnotations`. |
 | issuers.issuer-example.apiVersion | string | `"cert-manager.io/v1"` | Per-resource apiVersion override. |

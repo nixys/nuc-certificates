@@ -1,12 +1,1 @@
-{{- range $name, $item := (.Values.issuers | default dict) }}
----
-{{ include "nuc-certificates.renderResource" (dict
-  "root" $
-  "item" $item
-  "resourceName" $name
-  "kind" "Issuer"
-  "defaultApiVersion" $.Values.apiVersions.issuer
-  "resourceKey" (printf "issuers.%s" $name)
-  "namespaced" true
-) }}
-{{- end }}
+{{ include "nuc-certificates.renderResourceCollection" (dict "root" $ "items" .Values.issuers "resourceKey" "issuers" "defaultApiVersion" $.Values.apiVersions.issuer "kind" "Issuer" "namespaced" true) }}

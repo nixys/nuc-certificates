@@ -46,3 +46,22 @@ status:
 {{- end }}
 {{- end }}
 {{- end -}}
+
+{{- define "nuc-certificates.renderResourceCollection" -}}
+{{- $root := .root -}}
+{{- $items := .items | default dict -}}
+{{- $resourceKey := .resourceKey -}}
+{{- $defaultApiVersion := .defaultApiVersion -}}
+{{- $kind := .kind -}}
+{{- $namespaced := .namespaced -}}
+{{- $documents := list -}}
+{{- range $resourceName, $item := $items -}}
+{{- if kindIs "map" $item -}}
+{{- $rendered := include "nuc-certificates.renderResource" (dict "root" $root "item" $item "resourceName" $resourceName "resourceKey" (printf "%s[%q]" $resourceKey $resourceName) "kind" $kind "defaultApiVersion" $defaultApiVersion "namespaced" $namespaced) -}}
+{{- if $rendered -}}
+{{- $documents = append $documents $rendered -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- join "\n---\n" $documents -}}
+{{- end -}}
