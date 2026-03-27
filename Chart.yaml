@@ -3,7 +3,7 @@ apiVersion: v2
 name: nuc-certificates
 description: Helm chart for rendering cert-manager custom resources
 type: application
-version: 1.0.0-rc6
+version: 1.0.0-rc7
 appVersion: "v1"
 icon: https://registry.nixys.ru/logo.png
 home: https://github.com/nixys/nuc-certificates
