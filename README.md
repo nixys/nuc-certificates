@@ -1,5 +1,7 @@
 # NUC Certificates
 
+[![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/nuc-certificates)](https://artifacthub.io/packages/search?repo=nuc-certificates)
+
 Helm chart for rendering cert-manager custom resources from declarative values.
 
 The chart does not install cert-manager CRDs or the cert-manager controllers. It only renders cert-manager resources that are already supported by the target cluster.
