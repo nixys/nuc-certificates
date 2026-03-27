@@ -187,7 +187,7 @@ The smoke suite currently covers:
 1. `default-empty`
    Verifies that the chart renders no manifests with default values.
 
-2. `schema-invalid-resource-list`
+2. `schema-invalid-list-contract`
    Verifies that `values.schema.json` is active and rejects the legacy list-based resource contract.
 
 3. `rendering-contract`

@@ -9,12 +9,14 @@ DEFAULT_SCHEMA_LOCATION = (
 )
 
 SCENARIO_ALIASES = {
-    "schema-invalid-missing-name": "schema-invalid-resource-list",
+    "schema-invalid-resource-list": "schema-invalid-list-contract",
+    "schema-invalid-missing-name": "schema-invalid-list-contract",
 }
 
 SCENARIO_CHOICES = [
     "all",
     "default-empty",
+    "schema-invalid-list-contract",
     "schema-invalid-resource-list",
     "schema-invalid-missing-name",
     "rendering-contract",

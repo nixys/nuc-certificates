@@ -239,7 +239,7 @@ def check_example_kubeconform(context: SmokeContext) -> None:
 
 SCENARIOS: list[tuple[str, Callable[[SmokeContext], None]]] = [
     ("default-empty", check_default_empty),
-    ("schema-invalid-resource-list", check_schema_invalid_resource_list),
+    ("schema-invalid-list-contract", check_schema_invalid_resource_list),
     ("rendering-contract", check_rendering_contract),
     ("null-override", check_null_override),
     ("example-render", check_example_render),
