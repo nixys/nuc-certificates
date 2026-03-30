@@ -13,18 +13,15 @@ The supported resource set is based on the upstream cert-manager CRDs under [dep
 Add the Nixys chart repository:
 
 ```bash
-helm repo add nixys https://registry.nixys.io/chartrepo/public
-# or
-helm repo add nixys https://registry.nixys.ru/chartrepo/public
+helm repo add nixys https://registry.nixys.io/nuc
 ```
 
 Install the chart:
 
 ```bash
-helm install nuc-certificates . \
-  --namespace cert-manager-resources \
-  --create-namespace \
-  -f values.yaml.example
+helm install nuc-argocd nixys/nuc-certificates \
+  --namespace certificates \
+  --create-namespace
 ```
 
 Install the local README generator hook:
